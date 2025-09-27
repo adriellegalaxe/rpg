@@ -1,0 +1,36 @@
+import sqlite3
+import pygame
+
+# Configurações do pygame
+pygame.init()
+screen = pygame.display.set_mode((800, 600))
+pygame.display.set_caption("RPG com SQLite")
+font = pygame.font.SysFont("Arial", 24)
+
+# Conectar ao banco
+conn = sqlite3.connect("rpg.db")
+cursor = conn.cursor()
+
+# Buscar jogadores
+cursor.execute("SELECT nome, nivel FROM jogador")
+jogadores = cursor.fetchall()
+
+# Loop principal
+running = True
+while running:
+    screen.fill((30, 30, 30))
+
+    y = 50
+    for nome, nivel in jogadores:
+        texto = font.render(f"{nome} - Nível {nivel}", True, (200, 200, 200))
+        screen.blit(texto, (50, y))
+        y += 40
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+    pygame.display.flip()
+
+pygame.quit()
+conn.close()
